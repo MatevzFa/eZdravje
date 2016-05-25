@@ -43,9 +43,7 @@ function generirajPodatke(stPacienta) {
     switch(stPacienta) {
         case 1:
             // Peter Plešasti, otrok, ki raste.
-            ehrId = createEHR('Peter', 'Plešasti', '2004-01-06T08:31')
-            // console.log(d.toISOString().substring(0, 16));
-
+            ehrId = createEHR('Peter', 'Plešasti', '2004-01-06T08:31');
             y = 2010;
             m = 5;
             day = 25;
@@ -53,12 +51,9 @@ function generirajPodatke(stPacienta) {
             min = 21;
             for (var i = 0; i < 6; i++) {
                 var rng = Math.floor((Math.random() * 100) + 1);
-                // console.log(rng);
-                // console.log(y + i, (m + rng)%12 + 1, day, (h+rng*rng)%24, (min+rng)%24);
                 d = new Date(y + i, (m + rng)%3 + 3, day, (h+rng*rng)%24, (min+rng)%24);
-                // console.log(d.toISOString().substring(0, 16));
                 dodajMeritve(ehrId, {
-                    merilec : 'Sestra Sonja',
+                    merilec : 'Peter Plešasti',
                     datum   : d.toISOString().substring(0, 16),
                     visina   : 80.0 + i * 2.5 * 2.54,
                     teza   : 21 + 3*i,
@@ -67,31 +62,60 @@ function generirajPodatke(stPacienta) {
                     sistolicni   : (100+2*i).toFixed(1),
                     diastolicni   : (69+i).toFixed(1)
                 });
-                // vitalniZnaki.datum = d.toISOString().substring(0, 16);
-                // vitalniZnaki.visina = 80.0 + i * 2.5 * 2.54;
-                // vitalniZnaki.temperatura = (36.3 + ((213*i)%5)/7*Math.pow(-1,i)).toFixed(1);
-                // vitalniZnaki.diastolicni = (69+i).toFixed(1);
-                // vitalniZnaki.sistolicni = (100+2*i).toFixed(1);
-                // vitalniZnaki.kisik = ((96 + (3+21*i)%4)/100).toFixed(2);
-                // vitalniZnaki.teza = 21 + 3*i;
-
-                // dodajMeritve(ehrId, vitalniZnaki);
             }
             break;
         case 2:
-            // Bine Blatni
-            ehrId = createEHR('Bine', 'Blatni', '1974-05-12T17:34')
+            // Bine Blatni, zdrav posameznik, ki v februarju vodi evidenco vitalnih znakov vsak drugi dan.
+            ehrId = createEHR('Bine', 'Blatni', '1974-05-12T17:34');
+            y = 2016;
+            m = 2;
+            day = 3;
+            h = 9;
+            min = 15;
+            for (var i = 0; i < 10; i++) {
+                var rng = Math.floor((Math.random() * 100) + 1);
+                d = new Date(y, m, day + 2*i, (h+rng*rng)%24, (min+rng*12345)%60);
+                dodajMeritve(ehrId, {
+                    merilec : 'Bine Blatni',
+                    datum   : d.toISOString().substring(0, 16),
+                    visina   : 184 + rng%2,
+                    teza   : 80,
+                    temperatura   : (36.3 + ((213*i)%5)/7*Math.pow(-1,i)).toFixed(1),
+                    kisik   : ((96 + (3+21*i)%4)/100).toFixed(2),
+                    sistolicni   : (118.0 + ((213*i)%5)/7*Math.pow(-1,i)).toFixed(1),
+                    diastolicni   : (70.0 + ((213*i)%5)/7*Math.pow(-1,i)).toFixed(1)
+                });
+            }
             break;
         case 3:
-            // Magdalena Morska
-            ehrId = createEHR('Magdalena', 'Morska', '1985-11-08T01:55')
+            // Magdalena Morska, študentka, ki je v času izpitnega obdobja zaradi stresa zbolela (povišan pritisk in vročina).
+            ehrId = createEHR('Magdalena', 'Morska', '1993-11-08T01:55')
+            y = 2015;
+            m = 6;
+            day = 11;
+            h = 15;
+            min = 23;
+            for (var i = 0; i < 10; i++) {
+                var rng = Math.floor((Math.random() * 100) + 1);
+                d = new Date(y, m, day + i, (h+rng*rng)%24, (min+rng*12345)%60);
+                dodajMeritve(ehrId, {
+                    merilec : 'Magdalena Morska',
+                    datum   : d.toISOString().substring(0, 16),
+                    visina   : 170,
+                    teza   : 57,
+                    temperatura   : ( i <= 6  ? (36.3 + ((213*i)%5)/7*Math.pow(-1,i)) : (38.6 + ((213*i)%5)/7*Math.pow(-1,i))   ).toFixed(1),
+                    kisik   : ((96 + (3+21*i)%4)/100).toFixed(2),
+                    sistolicni   : ( i <= 6 ? (118.0 + ((213*i)%5)/7*Math.pow(-1,i)) : (135.0 + ((213*i)%5)/7*Math.pow(-1,i))     ).toFixed(1),
+                    diastolicni   : ( i <= 6 ? (70.0 + ((213*i)%5)/7*Math.pow(-1,i)) : (85.0 + ((213*i)%5)/7*Math.pow(-1,i))     ).toFixed(1)
+                });
+            }
             break;
 
-        /**
-        * [afe411c3-5b84-42ce-8c10-01b68cfb1ad3] -- Peter Plešasti
-        * [3524f79f-eeac-4599-a368-e83561f68ca9] -- Bine Blatni
-        * [66f2b856-a779-45f2-9097-cca62c7e6fbe] -- Magdalena Morska
-        */
+            /**
+            *  [ef43c2e0-8316-4215-bd77-83d379359923] - Peter Plešasti
+            *  [449bfa6a-6445-4109-8fdf-4545879a51a3] - Bine Blatni
+            *  [278559ea-d4d2-4307-aa48-97387d047b0a] - Magdalena Morska
+            */
     }
 
 
@@ -101,8 +125,8 @@ function generirajPodatke(stPacienta) {
 
 function generiraj() {
     generirajPodatke(1);
-    // generirajPodatke(2);
-    // generirajPodatke(3);
+    generirajPodatke(2);
+    generirajPodatke(3);
 }
 
 // TODO: Tukaj implementirate funkcionalnost, ki jo podpira vaša aplikacija
