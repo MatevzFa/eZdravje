@@ -49,7 +49,7 @@
                     <div class="panel-heading">
                         <h4><strong>Dodajanje uporabnika</strong></h4>
                     </div>
-                        <div class="panel-body">
+                        <!-- <div class="panel-body">
                             <div class="row">
                                 <div class="col-lg-8 col-md-8 col-sm-8">Izberi obstoječega uporabnika</div>
                                 <div class="col-lg-4 col-md-4 col-sm-4">
@@ -61,35 +61,47 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="panel-body">
 
                             <div class="form-horizontal">
 
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Ime</label>
-                                    <div class="col-sm-10">
-                                        <input id="createIme" type="text" class="form-control m-b-10" placeholder="Ime">
+                                    <div class="input-group col-sm-9">
+                                        <input id="createIme" type="text" class="form-control" placeholder="Ime">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Priimek</label>
-                                    <div class="col-sm-10">
-                                        <input id="createPriimek" type="text" class="form-control m-b-10" placeholder="Priimek">
+                                    <div class="input-group col-sm-9">
+                                        <input id="createPriimek" type="text" class="form-control" placeholder="Priimek">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Datum rojstva</label>
-                                    <div class="col-sm-10">
-                                        <input id="createRojstvo" type="text" class="form-control m-b-10" placeholder="YYYY-MM-DDTHH:MM">
+                                    <div class="input-group col-sm-9">
+                                        <input id="createRojstvo" type="text" class="form-control" placeholder="YYYY-MM-DD">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Spol</label>
+                                    <div class="input-group col-sm-9">
+                                        <select class="form-control input-sm" name="createSpol">
+                                            <option value="">- Izberite -</option>
+                                            <option value="MALE">Moški</option>
+                                            <option value="FEMALE">Ženski</option>
+                                            <option value="OTHER">Drugo</option>
+                                        </select>
                                     </div>
                                 </div>
 
                             </div>
 
-                            <button type="button" id="createEHRBtn" onclick="createEHR($('#createIme').val(), $('#createPriimek').val(), $('#createRojstvo').val());" class="btn">Dodaj EHR zapis za novega uporabnika</button>
+                            <button type="button" id="createEHRBtn" onclick="createEHRClick();" class="btn">Dodaj EHR zapis za novega uporabnika</button>
                         </div>
                 </div>
         </div>
@@ -98,6 +110,16 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4><strong>Dodajanje meritev</strong></h4>
+                        <!-- <div class="panel-body"> -->
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">Ehr ID</label>
+                                    <div class="input-group col-sm-9">
+                                        <input id="addEhrId" type="text" class="form-control" placeholder="ef43c2e0-8316-4215-bd77-83d379359923">
+                                    </div>
+                                </div>
+                            </div>
+                        <!-- </div> -->
                     </div>
                         <div class="panel-body">
                             <div class="form-horizontal">
@@ -105,47 +127,49 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Telesna višina</label>
                                     <div class="input-group col-sm-9">
-                                        <input id="createIme" type="text" class="form-control m-b-10">
+                                        <input id="addVisina" type="text" class="form-control">
                                         <span class="input-group-addon" id="basic-addon2">cm</span>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Telesna teža</label>
                                     <div class="input-group col-sm-9">
-                                        <input id="createIme" type="text" class="form-control m-b-10">
+                                        <input id="addTeza" type="text" class="form-control">
                                         <span class="input-group-addon" id="basic-addon2">kg</span>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Temperatura</label>
                                     <div class="input-group col-sm-9">
-                                        <input id="createIme" type="text" class="form-control m-b-10">
+                                        <input id="addTemperatura" type="text" class="form-control">
                                         <span class="input-group-addon" id="basic-addon2">°C</span>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Sistolični tlak</label>
                                     <div class="input-group col-sm-9">
-                                        <input id="createIme" type="text" class="form-control m-b-10">
+                                        <input id="addSistolicni" type="text" class="form-control">
+                                        <span class="input-group-addon" id="basic-addon2">mmHg</span>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Diastolični tlak</label>
                                     <div class="input-group col-sm-9">
-                                        <input id="createIme" type="text" class="form-control m-b-10">
+                                        <input id="addDiastolicni" type="text" class="form-control">
+                                        <span class="input-group-addon" id="basic-addon2">mmHg</span>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Kisik v krvi</label>
                                     <div class="input-group col-sm-9">
-                                        <input id="createIme" type="text" class="form-control m-b-10">
+                                        <input id="addKisik" type="text" class="form-control">
                                         <span class="input-group-addon" id="basic-addon2">%</span>
                                     </div>
                                 </div>
 
                             </div>
 
-                            <button type="button" id="dodajMeritve" onclick="createEHR($('#createIme').val(), $('#createPriimek').val(), $('#createRojstvo').val());" class="btn">Dodaj meritve</button>
+                            <button type="button" id="dodajMeritve" onclick="dodajMeritveClick();" class="btn">Dodaj meritve</button>
                         </div>
                     </div>
                 </div>

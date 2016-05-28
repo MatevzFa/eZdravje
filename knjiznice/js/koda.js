@@ -43,7 +43,7 @@ function generirajPodatke(stPacienta) {
     switch(stPacienta) {
         case 1:
             // Peter Plešasti, otrok, ki raste.
-            ehrId = createEHR('Peter', 'Plešasti', '2004-01-06T08:31');
+            ehrId = createEHR('Peter', 'Plešasti', '2004-01-06T08:31', 'MALE');
             y = 2010;
             m = 5;
             day = 25;
@@ -54,7 +54,6 @@ function generirajPodatke(stPacienta) {
                 d = new Date(y + i, (m + rng)%3 + 3, day, (h+rng*rng)%24, (min+rng)%24);
                 dodajMeritve(ehrId, {
                     merilec : 'Peter Plešasti',
-                    spol    : 'MALE',
                     datum   : d.toISOString().substring(0, 16),
                     visina  : 80.0 + i * 2.5 * 2.54,
                     teza    : 21 + 3*i,
@@ -67,7 +66,7 @@ function generirajPodatke(stPacienta) {
             break;
         case 2:
             // Bine Blatni, zdrav posameznik, ki v februarju vodi evidenco vitalnih znakov vsak drugi dan.
-            ehrId = createEHR('Bine', 'Blatni', '1974-05-12T17:34');
+            ehrId = createEHR('Bine', 'Blatni', '1974-05-12T17:34', 'MALE');
             y = 2016;
             m = 2;
             day = 3;
@@ -78,7 +77,6 @@ function generirajPodatke(stPacienta) {
                 d = new Date(y, m, day + 2*i, (h+rng*rng)%24, (min+rng*12345)%60);
                 dodajMeritve(ehrId, {
                     merilec : 'Bine Blatni',
-                    spol    : 'MALE',
                     datum   : d.toISOString().substring(0, 16),
                     visina  : 184 + rng%2,
                     teza    : 80,
@@ -91,7 +89,7 @@ function generirajPodatke(stPacienta) {
             break;
         case 3:
             // Magdalena Morska, študentka, ki je v času izpitnega obdobja zaradi stresa zbolela (povišan pritisk in vročina).
-            ehrId = createEHR('Magdalena', 'Morska', '1993-11-08T01:55')
+            ehrId = createEHR('Magdalena', 'Morska', '1993-11-08T01:55', 'FEMALE')
             y = 2015;
             m = 6;
             day = 11;
@@ -102,7 +100,6 @@ function generirajPodatke(stPacienta) {
                 d = new Date(y, m, day + i, (h+rng*rng)%24, (min+rng*12345)%60);
                 dodajMeritve(ehrId, {
                     merilec : 'Magdalena Morska',
-                    spol    : 'FEMALE',
                     datum   : d.toISOString().substring(0, 16),
                     visina  : 170,
                     teza    : 57,
@@ -134,7 +131,7 @@ function generiraj() {
 
 // TODO: Tukaj implementirate funkcionalnost, ki jo podpira vaša aplikacija
 
-function createEHR(ime, priimek, datumRojstva) {
+function createEHR(ime, priimek, datumRojstva, spol) {
     console.log(ime, priimek, datumRojstva);
     sessionId = getSessionId();
     $.ajaxSetup({
@@ -173,6 +170,24 @@ function createEHR(ime, priimek, datumRojstva) {
     return response.responseJSON.ehrId;
 }
 
+function dodajMeritveClick() {
+    var date = new Date();
+    dodajMeritve($('#addEhrId').val(), {
+        datum       :   date.toISOString(),
+        visina      :   $('#addVisina').val(),
+        teza        :   $('#addTeza').val(),
+        temperatura :   $('#addTemperatura').val(),
+        sistolicni  :   $('#addSistolicni').val(),
+        diastolicni :   $('#addDiastolicni').val(),
+        kisik       :   $('#addKisik').val(),
+        merilec     :   'uporabnik'
+    });
+}
+
+function createEHRClick() {
+    $('#addEhrId').val(createEHR($('#createIme').val(), $('#createPriimek').val(), $('#createRojstvo').val(), $('select[name="createSpol"]').val()));
+}
+
 function dodajMeritve(ehrId, vitalniZnaki) {
     console.log(vitalniZnaki);
     var sessionId = getSessionId();
@@ -203,14 +218,10 @@ function dodajMeritve(ehrId, vitalniZnaki) {
 		    contentType: 'application/json',
 		    data: JSON.stringify(podatki),
 		    success: function (res) {
-		        $("#dodajMeritveVitalnihZnakovSporocilo").html(
-              "<span class='obvestilo label label-success fade-in'>" +
-              res.meta.href + ".</span>");
+		        console.log('Uspešno dodane meritve za [%s]', ehrId);
 		    },
 		    error: function(err) {
-		    	$("#dodajMeritveVitalnihZnakovSporocilo").html(
-            "<span class='obvestilo label label-danger fade-in'>Napaka '" +
-            JSON.parse(err.responseText).userMessage + "'!");
+		    	console.log('Napaka pri dodajanju meritev.\n', err);
 		    }
 		});
 }
