@@ -1,51 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>eZdravje :: 4. DN :: OIS 2015/2016</title>
-  <link href="knjiznice/css/bootstrap.min.css" rel="stylesheet">
-  <style>
+    <meta charset="utf-8">
+    <title>eZdravje :: 4. DN :: OIS 2015/2016</title>
+    <link href="knjiznice/css/bootstrap.min.css" rel="stylesheet">
+    <style>
     body {padding-top: 70px;}
-  </style>
-  <script src="knjiznice/js/jquery-2.2.3.min.js"></script>
-  <script src="knjiznice/js/bootstrap.min.js"></script>
-  <script src="knjiznice/js/koda.js"></script>
-  <script type="text/javascript" async src="https://platform.twitter.com/widgets.js"></script>
+    </style>
+    <script src="knjiznice/js/jquery-2.2.3.min.js"></script>
+    <script src="knjiznice/js/bootstrap.min.js"></script>
+    <script src="knjiznice/js/koda.js"></script>
+    <script type="text/javascript" async src="https://platform.twitter.com/widgets.js"></script>
 </head>
 <body>
 
-  <!-- ZAČETEK: Menujska vrstica na vrhu spletne strani -->
-  <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menujska-vrstica">
-          <span class="sr-only">Prikaži menu</span>
-          <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
-        </button>
-        <!-- ZAČETEK: Ime vaše aplikacije -->
-        <a class="navbar-brand" href="index.html">Kaj je z mano?!</a>
-        <!-- KONEC: Ime vaše aplikacije -->
-      </div>
-      <div class="collapse navbar-collapse" id="menujska-vrstica">
-        <ul class="nav navbar-nav">
-          <li><a href="opis.html">Opis ideje</a></li>
-          <li><a href="nacrt.html">Načrt informacijske rešitve</a></li>
-          <li><a onclick="generiraj()" href="#">Generiranje podatkov</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-  <!-- KONEC: Menujska vrstica na vrhu spletne strani -->
+    <!-- ZAČETEK: Menujska vrstica na vrhu spletne strani -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menujska-vrstica">
+                    <span class="sr-only">Prikaži menu</span>
+                    <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </button>
+                <!-- ZAČETEK: Ime vaše aplikacije -->
+                <a class="navbar-brand" href="index.html">Kaj je z mano?!</a>
+                <!-- KONEC: Ime vaše aplikacije -->
+            </div>
+            <div class="collapse navbar-collapse" id="menujska-vrstica">
+                <ul class="nav navbar-nav">
+                    <li><a href="opis.html">Opis ideje</a></li>
+                    <li><a href="nacrt.html">Načrt informacijske rešitve</a></li>
+                    <li><a onclick="generiraj" href="#">Generiranje podatkov</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- KONEC: Menujska vrstica na vrhu spletne strani -->
 
-  <!-- ZAČETEK: Vsebina aplikacije -->
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12 text-center">
-        <p class="lead"><strong>TO-DO</strong>: Na tem mestu implementirajte vašo aplikacijo.</p>
-      </div>
+    <!-- ZAČETEK: Vsebina aplikacije -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <p class="lead"><strong>Kaj je z mano?!</strong></p>
+            </div>
+        </div>
+        <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4><strong>Dodajanje uporabnika</strong></h4>
+                    </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-8 col-md-8 col-sm-8">Izberi obstoječega uporabnika</div>
+                                <div class="col-lg-4 col-md-4 col-sm-4">
+                                    <select class="form-control input-sm" id="userTemplate">
+                                        <option value="">- Izberite -</option>
+                                        <option value="ef43c2e0-8316-4215-bd77-83d379359923">Peter Plešasti</option>
+                                        <option value="449bfa6a-6445-4109-8fdf-4545879a51a3">Bine Blatni</option>
+                                        <option value="278559ea-d4d2-4307-aa48-97387d047b0a">Magdalena Morska</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+
+                            <div class="form-horizontal">
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Ime</label>
+                                    <div class="col-sm-10">
+                                        <input id="createIme" type="text" class="form-control m-b-10" placeholder="Ime">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Priimek</label>
+                                    <div class="col-sm-10">
+                                        <input id="createPriimek" type="text" class="form-control m-b-10" placeholder="Priimek">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Datum rojstva</label>
+                                    <div class="col-sm-10">
+                                        <input id="createRojstvo" type="text" class="form-control m-b-10" placeholder="YYYY-MM-DDTHH:MM">
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <button type="button" id="createEHRBtn" onclick="createEHR($('#createIme').val(), $('#createPriimek').val(), $('#createRojstvo').val());" class="btn">Dodaj EHR zapis za novega uporabnika</button>
+                        </div>
+                </div>
+        </div>
+
+        <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4><strong>Dodajanje meritev</strong></h4>
+                    </div>
+                        <div class="panel-body">
+                            <div class="form-horizontal">
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Telesna višina</label>
+                                    <div class="input-group col-sm-9">
+                                        <input id="createIme" type="text" class="form-control m-b-10">
+                                        <span class="input-group-addon" id="basic-addon2">cm</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Telesna teža</label>
+                                    <div class="input-group col-sm-9">
+                                        <input id="createIme" type="text" class="form-control m-b-10">
+                                        <span class="input-group-addon" id="basic-addon2">kg</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Temperatura</label>
+                                    <div class="input-group col-sm-9">
+                                        <input id="createIme" type="text" class="form-control m-b-10">
+                                        <span class="input-group-addon" id="basic-addon2">°C</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Sistolični tlak</label>
+                                    <div class="input-group col-sm-9">
+                                        <input id="createIme" type="text" class="form-control m-b-10">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Diastolični tlak</label>
+                                    <div class="input-group col-sm-9">
+                                        <input id="createIme" type="text" class="form-control m-b-10">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Kisik v krvi</label>
+                                    <div class="input-group col-sm-9">
+                                        <input id="createIme" type="text" class="form-control m-b-10">
+                                        <span class="input-group-addon" id="basic-addon2">%</span>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <button type="button" id="dodajMeritve" onclick="createEHR($('#createIme').val(), $('#createPriimek').val(), $('#createRojstvo').val());" class="btn">Dodaj meritve</button>
+                        </div>
+                    </div>
+                </div>
+        </div>
     </div>
-  </div>
-  <!-- KONEC: Vsebina aplikacije -->
+    <!-- KONEC: Vsebina aplikacije -->
 
 </body>
 </html>

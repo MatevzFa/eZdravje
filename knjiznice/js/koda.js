@@ -54,13 +54,14 @@ function generirajPodatke(stPacienta) {
                 d = new Date(y + i, (m + rng)%3 + 3, day, (h+rng*rng)%24, (min+rng)%24);
                 dodajMeritve(ehrId, {
                     merilec : 'Peter Plešasti',
+                    spol    : 'MALE',
                     datum   : d.toISOString().substring(0, 16),
-                    visina   : 80.0 + i * 2.5 * 2.54,
-                    teza   : 21 + 3*i,
-                    temperatura   : (36.3 + ((213*i)%5)/7*Math.pow(-1,i)).toFixed(1),
+                    visina  : 80.0 + i * 2.5 * 2.54,
+                    teza    : 21 + 3*i,
                     kisik   : ((96 + (3+21*i)%4)/100).toFixed(2),
-                    sistolicni   : (100+2*i).toFixed(1),
-                    diastolicni   : (69+i).toFixed(1)
+                    temperatura : (36.3 + ((213*i)%5)/7*Math.pow(-1,i)).toFixed(1),
+                    sistolicni  : (100+2*i).toFixed(1),
+                    diastolicni : (69+i).toFixed(1)
                 });
             }
             break;
@@ -77,12 +78,13 @@ function generirajPodatke(stPacienta) {
                 d = new Date(y, m, day + 2*i, (h+rng*rng)%24, (min+rng*12345)%60);
                 dodajMeritve(ehrId, {
                     merilec : 'Bine Blatni',
+                    spol    : 'MALE',
                     datum   : d.toISOString().substring(0, 16),
-                    visina   : 184 + rng%2,
-                    teza   : 80,
-                    temperatura   : (36.3 + ((213*i)%5)/7*Math.pow(-1,i)).toFixed(1),
+                    visina  : 184 + rng%2,
+                    teza    : 80,
                     kisik   : ((96 + (3+21*i)%4)/100).toFixed(2),
-                    sistolicni   : (118.0 + ((213*i)%5)/7*Math.pow(-1,i)).toFixed(1),
+                    temperatura   : (36.3 + ((213*i)%5)/7*Math.pow(-1,i)).toFixed(1),
+                    sistolicni    : (118.0 + ((213*i)%5)/7*Math.pow(-1,i)).toFixed(1),
                     diastolicni   : (70.0 + ((213*i)%5)/7*Math.pow(-1,i)).toFixed(1)
                 });
             }
@@ -100,13 +102,14 @@ function generirajPodatke(stPacienta) {
                 d = new Date(y, m, day + i, (h+rng*rng)%24, (min+rng*12345)%60);
                 dodajMeritve(ehrId, {
                     merilec : 'Magdalena Morska',
+                    spol    : 'FEMALE',
                     datum   : d.toISOString().substring(0, 16),
-                    visina   : 170,
-                    teza   : 57,
-                    temperatura   : ( i <= 6  ? (36.3 + ((213*i)%5)/7*Math.pow(-1,i)) : (38.6 + ((213*i)%5)/7*Math.pow(-1,i))   ).toFixed(1),
+                    visina  : 170,
+                    teza    : 57,
                     kisik   : ((96 + (3+21*i)%4)/100).toFixed(2),
-                    sistolicni   : ( i <= 6 ? (118.0 + ((213*i)%5)/7*Math.pow(-1,i)) : (135.0 + ((213*i)%5)/7*Math.pow(-1,i))     ).toFixed(1),
-                    diastolicni   : ( i <= 6 ? (70.0 + ((213*i)%5)/7*Math.pow(-1,i)) : (85.0 + ((213*i)%5)/7*Math.pow(-1,i))     ).toFixed(1)
+                    temperatura : ( i <= 6  ? (36.3 + ((213*i)%5)/7*Math.pow(-1,i)) : (38.6 + ((213*i)%5)/7*Math.pow(-1,i))   ).toFixed(1),
+                    sistolicni  : ( i <= 6 ? (118.0 + ((213*i)%5)/7*Math.pow(-1,i)) : (135.0 + ((213*i)%5)/7*Math.pow(-1,i))     ).toFixed(1),
+                    diastolicni : ( i <= 6 ? (70.0 + ((213*i)%5)/7*Math.pow(-1,i)) : (85.0 + ((213*i)%5)/7*Math.pow(-1,i))     ).toFixed(1)
                 });
             }
             break;
@@ -132,6 +135,7 @@ function generiraj() {
 // TODO: Tukaj implementirate funkcionalnost, ki jo podpira vaša aplikacija
 
 function createEHR(ime, priimek, datumRojstva) {
+    console.log(ime, priimek, datumRojstva);
     sessionId = getSessionId();
     $.ajaxSetup({
         headers: {"Ehr-Session" :   sessionId}
@@ -145,6 +149,7 @@ function createEHR(ime, priimek, datumRojstva) {
                         var partyData = {
                             firstNames: ime,
                             lastNames: priimek,
+                            gender: spol,
                             dateOfBirth: datumRojstva,
                             partyAdditionalInfo: [{key: "ehrId", value: ehrId}]
                         };
