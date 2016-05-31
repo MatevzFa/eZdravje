@@ -4,8 +4,11 @@
     <meta charset="utf-8">
     <title>eZdravje :: 4. DN :: OIS 2015/2016</title>
     <link href="knjiznice/css/bootstrap.min.css" rel="stylesheet">
+    <link href="knjiznice/css/twitter-btn.css" rel="stylesheet">
+    <link rel="canonical" href="https://dev.twitter.com/web/tweet-button">
     <style>
-    body {padding-top: 70px;}
+    body {padding-top: 70px;
+        padding-bottom: 100px;}
     </style>
     <script src="knjiznice/js/jquery-2.2.3.min.js"></script>
     <script src="knjiznice/js/bootstrap.min.js"></script>
@@ -40,142 +43,188 @@
     <!-- ZAČETEK: Vsebina aplikacije -->
     <div class="container">
         <div class="row">
-            <div class="col-lg-12 text-center">
-                <p class="lead"><strong>Kaj je z mano?!</strong></p>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4><strong>Dodajanje uporabnika</strong></h4>
+                </div>
+                <div class="panel-body">
+
+                    <div class="form-horizontal">
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Ime</label>
+                            <div class="input-group col-sm-9">
+                                <input id="createIme" type="text" class="form-control" placeholder="Ime">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Priimek</label>
+                            <div class="input-group col-sm-9">
+                                <input id="createPriimek" type="text" class="form-control" placeholder="Priimek">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Datum rojstva</label>
+                            <div class="input-group col-sm-9">
+                                <input id="createRojstvo" type="text" class="form-control" placeholder="YYYY-MM-DD">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Spol</label>
+                            <div class="input-group col-sm-9">
+                                <select class="form-control input-sm" name="createSpol">
+                                    <option value="">- Izberite -</option>
+                                    <option value="MALE">Moški</option>
+                                    <option value="FEMALE">Ženski</option>
+                                    <option value="OTHER">Drugo</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <button type="button" id="createEHRBtn" onclick="createEHRClick();" class="btn">Dodaj EHR zapis za novega uporabnika</button>
+                    <span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span id="createMsg"></span>
+                </div>
             </div>
         </div>
+
         <div class="row">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4><strong>Dodajanje uporabnika</strong></h4>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <h4 class="col-sm-7"><strong>Dodajanje meritev</strong></h4>
                     </div>
-                        <!-- <div class="panel-body">
-                            <div class="row">
-                                <div class="col-lg-8 col-md-8 col-sm-8">Izberi obstoječega uporabnika</div>
-                                <div class="col-lg-4 col-md-4 col-sm-4">
-                                    <select class="form-control input-sm" id="userTemplate">
+                    <div class="row">
+                        <div class="form-horizontal col-sm-5">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Vzorčna oseba</label>
+                                <div class="input-group col-sm-8">
+                                    <select class="form-control input-sm" id="dodajanje_selectEhrId">
                                         <option value="">- Izberite -</option>
-                                        <option value="ef43c2e0-8316-4215-bd77-83d379359923">Peter Plešasti</option>
-                                        <option value="449bfa6a-6445-4109-8fdf-4545879a51a3">Bine Blatni</option>
-                                        <option value="278559ea-d4d2-4307-aa48-97387d047b0a">Magdalena Morska</option>
+                                        <option value="3148b151-af72-475c-b3cb-3f60832d8efe">Peter Plešasti</option>
+                                        <option value="6a859e99-5118-4526-9c6b-febd99b3474d">Bine Blatni</option>
+                                        <option value="cee02fde-0432-4b40-aacb-eac04f73245a">Magdalena Morska (povišan tlak)</option>
                                     </select>
                                 </div>
                             </div>
-                        </div> -->
-                        <div class="panel-body">
-
-                            <div class="form-horizontal">
-
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">Ime</label>
-                                    <div class="input-group col-sm-9">
-                                        <input id="createIme" type="text" class="form-control" placeholder="Ime">
-                                    </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Ehr ID</label>
+                                <div class="input-group col-sm-8">
+                                    <input id="dodajanje_EhrId" type="text" class="form-control" placeholder="ef43c2e0-8316-4215-bd77-83d379359923">
                                 </div>
-
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">Priimek</label>
-                                    <div class="input-group col-sm-9">
-                                        <input id="createPriimek" type="text" class="form-control" placeholder="Priimek">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">Datum rojstva</label>
-                                    <div class="input-group col-sm-9">
-                                        <input id="createRojstvo" type="text" class="form-control" placeholder="YYYY-MM-DD">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">Spol</label>
-                                    <div class="input-group col-sm-9">
-                                        <select class="form-control input-sm" name="createSpol">
-                                            <option value="">- Izberite -</option>
-                                            <option value="MALE">Moški</option>
-                                            <option value="FEMALE">Ženski</option>
-                                            <option value="OTHER">Drugo</option>
-                                        </select>
-                                    </div>
-                                </div>
-
                             </div>
-
-                            <button type="button" id="createEHRBtn" onclick="createEHRClick();" class="btn">Dodaj EHR zapis za novega uporabnika</button>
                         </div>
+                    </div>
                 </div>
+                <div class="panel-body">
+                    <div class="form-horizontal">
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Telesna višina</label>
+                            <div class="input-group col-sm-9">
+                                <input id="addVisina" type="text" class="form-control">
+                                <span class="input-group-addon" id="basic-addon2">cm</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Telesna teža</label>
+                            <div class="input-group col-sm-9">
+                                <input id="addTeza" type="text" class="form-control">
+                                <span class="input-group-addon" id="basic-addon2">kg</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Temperatura</label>
+                            <div class="input-group col-sm-9">
+                                <input id="addTemperatura" type="text" class="form-control">
+                                <span class="input-group-addon" id="basic-addon2">°C</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Sistolični tlak</label>
+                            <div class="input-group col-sm-9">
+                                <input id="addSistolicni" type="text" class="form-control">
+                                <span class="input-group-addon" id="basic-addon2">mmHg</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Diastolični tlak</label>
+                            <div class="input-group col-sm-9">
+                                <input id="addDiastolicni" type="text" class="form-control">
+                                <span class="input-group-addon" id="basic-addon2">mmHg</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Kisik v krvi</label>
+                            <div class="input-group col-sm-9">
+                                <input id="addKisik" type="text" class="form-control">
+                                <span class="input-group-addon" id="basic-addon2">%</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <button type="button" id="dodajMeritve" onclick="dodajMeritveClick();" class="btn">Dodaj meritve</button>
+                    <span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span id="addMsg"></span>
+                </div>
+            </div>
         </div>
 
         <div class="row">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4><strong>Dodajanje meritev</strong></h4>
-                        <!-- <div class="panel-body"> -->
-                            <div class="form-horizontal">
-                                <div class="form-group">
-                                    <label class="col-sm-1 control-label">Ehr ID</label>
-                                    <div class="input-group col-sm-9">
-                                        <input id="addEhrId" type="text" class="form-control" placeholder="ef43c2e0-8316-4215-bd77-83d379359923">
-                                    </div>
-                                </div>
-                            </div>
-                        <!-- </div> -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <h4 class="col-sm-7"><strong>Pregled meritev</strong></h4>
                     </div>
-                        <div class="panel-body">
-                            <div class="form-horizontal">
-
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">Telesna višina</label>
-                                    <div class="input-group col-sm-9">
-                                        <input id="addVisina" type="text" class="form-control">
-                                        <span class="input-group-addon" id="basic-addon2">cm</span>
-                                    </div>
+                    <div class="row">
+                        <div class="form-horizontal col-sm-5">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Vzorčna oseba</label>
+                                <div class="input-group col-sm-8">
+                                    <select class="form-control input-sm" id="branje_selectEhrId">
+                                        <option value="">- Izberite -</option>
+                                        <option value="3148b151-af72-475c-b3cb-3f60832d8efe">Peter Plešasti</option>
+                                        <option value="6a859e99-5118-4526-9c6b-febd99b3474d">Bine Blatni</option>
+                                        <option value="cee02fde-0432-4b40-aacb-eac04f73245a">Magdalena Morska (povišan tlak)</option>
+                                    </select>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">Telesna teža</label>
-                                    <div class="input-group col-sm-9">
-                                        <input id="addTeza" type="text" class="form-control">
-                                        <span class="input-group-addon" id="basic-addon2">kg</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">Temperatura</label>
-                                    <div class="input-group col-sm-9">
-                                        <input id="addTemperatura" type="text" class="form-control">
-                                        <span class="input-group-addon" id="basic-addon2">°C</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">Sistolični tlak</label>
-                                    <div class="input-group col-sm-9">
-                                        <input id="addSistolicni" type="text" class="form-control">
-                                        <span class="input-group-addon" id="basic-addon2">mmHg</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">Diastolični tlak</label>
-                                    <div class="input-group col-sm-9">
-                                        <input id="addDiastolicni" type="text" class="form-control">
-                                        <span class="input-group-addon" id="basic-addon2">mmHg</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">Kisik v krvi</label>
-                                    <div class="input-group col-sm-9">
-                                        <input id="addKisik" type="text" class="form-control">
-                                        <span class="input-group-addon" id="basic-addon2">%</span>
-                                    </div>
-                                </div>
-
                             </div>
-
-                            <button type="button" id="dodajMeritve" onclick="dodajMeritveClick();" class="btn">Dodaj meritve</button>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Ehr ID</label>
+                                <div class="input-group col-sm-8">
+                                    <input id="branje_EhrId" type="text" class="form-control" placeholder="ef43c2e0-8316-4215-bd77-83d379359923">
+                                </div>
+                            </div>
+                            <button type="button" id="preberiMeritve" onclick="preberiMeritveClick();" class="btn">Preberi meritve</button>
+                            <span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span id="readMsg"></span>
                         </div>
                     </div>
                 </div>
+                <div id="ageWarning" class="panel-body">
+                    <table id="prebraniPodatki" class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Čas meritve</th>
+                                <th>Izmerjeni krvni tlak (sys/dia)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- KONEC: Vsebina aplikacije -->
+
+
+</div>
+<!-- KONEC: Vsebina aplikacije -->
 
 </body>
 </html>

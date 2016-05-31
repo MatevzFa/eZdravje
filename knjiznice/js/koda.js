@@ -119,7 +119,7 @@ function generirajPodatke(stPacienta) {
     }
 
 
-    console.log(ehrId);
+    // console.log(ehrId);
     return ehrId;
 }
 
@@ -132,7 +132,7 @@ function generiraj() {
 // TODO: Tukaj implementirate funkcionalnost, ki jo podpira vaša aplikacija
 
 function createEHR(ime, priimek, datumRojstva, spol) {
-    console.log(ime, priimek, datumRojstva);
+    // console.log(ime, priimek, datumRojstva);
     sessionId = getSessionId();
     $.ajaxSetup({
         headers: {"Ehr-Session" :   sessionId}
@@ -157,39 +157,27 @@ function createEHR(ime, priimek, datumRojstva, spol) {
                             data: JSON.stringify(partyData),
                             success: function (party) {
                                 if (party.action == 'CREATE') {
-                                    console.log("Uspeh. [%s]", ehrId);
+                                    // console.log("Uspeh. [%s]", ehrId);
                                 }
+                                $('#createMsg').text('Uspešno dodan vnos. Pridobljen Ehr ID za'+ ime + ' ' + priimek + ' ('+ ehrId +') je bil vstavljen v ustrezna polja.');
+                                console.log('Uspešno dodan vnos. Pridobljen Ehr ID za'+ ime + ' ' + priimek + ' ('+ ehrId +') je bil vstavljen v ustrezna polja.');
+                                // $('#branje_EhrId').val(ehrId);
+                                $('#dodajanje_EhrId').val(ehrId);
+                                $('#branje_EhrId').val(ehrId);
                             },
                             error: function(err) {
+                                $('#createMsg').text('Prišlo je do napake.');
                                 console.log("Napaka");
                             }
                         });
                     }
     });
-    console.log(response);
+    // console.log(response);
     return response.responseJSON.ehrId;
 }
 
-function dodajMeritveClick() {
-    var date = new Date();
-    dodajMeritve($('#addEhrId').val(), {
-        datum       :   date.toISOString(),
-        visina      :   $('#addVisina').val(),
-        teza        :   $('#addTeza').val(),
-        temperatura :   $('#addTemperatura').val(),
-        sistolicni  :   $('#addSistolicni').val(),
-        diastolicni :   $('#addDiastolicni').val(),
-        kisik       :   $('#addKisik').val(),
-        merilec     :   'uporabnik'
-    });
-}
-
-function createEHRClick() {
-    $('#addEhrId').val(createEHR($('#createIme').val(), $('#createPriimek').val(), $('#createRojstvo').val(), $('select[name="createSpol"]').val()));
-}
-
 function dodajMeritve(ehrId, vitalniZnaki) {
-    console.log(vitalniZnaki);
+    // console.log(vitalniZnaki);
     var sessionId = getSessionId();
     $.ajaxSetup({
 		    headers: {"Ehr-Session": sessionId}
@@ -218,10 +206,130 @@ function dodajMeritve(ehrId, vitalniZnaki) {
 		    contentType: 'application/json',
 		    data: JSON.stringify(podatki),
 		    success: function (res) {
-		        console.log('Uspešno dodane meritve za [%s]', ehrId);
+		        $('#addMsg').text('Uspešno dodane meritve. Za branje so na voljo v naslednjem razdelku.');
 		    },
 		    error: function(err) {
-		    	console.log('Napaka pri dodajanju meritev.\n', err);
+		    	// console.log('Napaka pri dodajanju meritev.\n', err);
+                $('#addMsg').text('Vnešeni podatki niso pravilni.');
 		    }
 		});
 }
+
+function preberiMeritve(ehrId) {
+    var sessionId = getSessionId();
+
+    $('#prebraniPodatki tbody').empty();
+    $("#ageWarning div.row").remove();
+    // Pridobi podatke o uporabnikovi starosti
+    $.ajax({
+        url :   baseUrl + "/demographics/ehr/" + ehrId +"/party",
+        type: "GET",
+        headers: {"Ehr-Session": sessionId},
+        success: function (response2) {
+            // console.log("party\n",response2);
+            var date1 = new Date(response2.party.dateOfBirth);
+            var date2 = new Date();
+
+            if (     (date2.getTime()- date1.getTime())/(1000*60*60*24*365) < 18     ) {
+                $("#ageWarning").prepend('<div class="row text-center" style="background-color: rgba(255,0,0,0.5);padding: 5px 0"><strong>Podatki za osebe mlajše od 18 let niso natančni.</strong></div>')
+            }
+
+            $.ajax({
+                url: baseUrl + "/view/" + ehrId + "/" + "blood_pressure?" + $.param({limit: 20}),
+                type: 'GET',
+                headers: {"Ehr-Session": sessionId},
+                success: function (response) {
+                    if (response.length > 0) {
+                        // console.log(response);
+                        var TLAK_SLO = {
+                            systolic : {}
+                        }
+                        // Pridobi podatke o pričakovanih ravneh krvnega tlaka.
+                        $.ajax({
+                            url     :   "http://apps.who.int/gho/athena/data/GHO/BP_06.json?profile=simple&filter=AGEGROUP:*;SEX:*;COUNTRY:*",
+                            dataType:   "jsonp",
+                            success :   function(data) {
+                                            for(var i = 0; i < data.fact.length; i++) {
+                                                if (data.fact[i].dim.COUNTRY == "Slovenia" && data.fact[i].dim.YEAR == "2014") {
+
+                                                    TLAK_SLO.systolic[data.fact[i].dim.SEX] = data.fact[i].Value;
+                                                }
+                                            }
+
+                                            for (var i = 0; i < response.length; i++) {
+                                                var gender = (response2.party.gender == 'FEMALE' ? 'Female' : (response2.party.gender == 'MALE' ? 'Male' : 'Both sexes'));
+                                                // console.log(gender);
+                                                var press = parseInt(TLAK_SLO.systolic[gender].substring(0, 5)) < response[i].systolic;
+                                                $('#prebraniPodatki tbody').append(' \
+                                                    <tr style="background-color: rgba('+ (press ? '255,0,0' : '255,255,255') +', 0.3)"> \
+                                                        <th scope="row">' + (i+1) + '</td> \
+                                                        <td>' + response[i].time.substring(0, 16) + '</td> \
+                                                        <td>' + response[i].systolic.toFixed(1) + ' / ' + response[i].diastolic.toFixed(1) + (press ? '<span style="margin-left: 10px; color:#999">Povišan krvni tlak</span>' : '') +'</td> \
+                                                        <td>'+ (press ? '<a class="twitter-tweet" href="https://twitter.com/intent/tweet">Tweet</a>' : '') +'</td> \
+                                                    </tr> \
+                                                ');
+                                            }
+
+                                        },
+                            error   :   function(err) {
+                                            $('#readMsg').text('Dostop do WHO ni uspel.');
+                                        }
+                        });
+                    } else {
+                        console.log('nothing\n', response);
+                    }
+                },
+            });
+        },
+        error: function(err) {
+            $('#readMsg').text('Vnešeni podatki niso pravilni.');
+        }
+    })
+
+
+
+}
+
+function createEHRClick() {
+    $('#addEhrId').val(createEHR($('#createIme').val(), $('#createPriimek').val(), $('#createRojstvo').val(), $('select[name="createSpol"]').val()));
+
+    $('#createIme').val('');
+    $('#createPriimek').val('');
+    $('#createRojstvo').val('');
+}
+
+function dodajMeritveClick() {
+    var date = new Date();
+    dodajMeritve($('#dodajanje_EhrId').val(), {
+        datum       :   date.toISOString(),
+        visina      :   $('#addVisina').val(),
+        teza        :   $('#addTeza').val(),
+        temperatura :   $('#addTemperatura').val(),
+        sistolicni  :   $('#addSistolicni').val(),
+        diastolicni :   $('#addDiastolicni').val(),
+        kisik       :   $('#addKisik').val(),
+        merilec     :   'uporabnik'
+    });
+    $('#addVisina').val('');
+    $('#addTeza').val('');
+    $('#addTemperatura').val('');
+    $('#addSistolicni').val('');
+    $('#addDiastolicni').val('');
+    $('#addKisik').val('');
+}
+
+function preberiMeritveClick() {
+    preberiMeritve($('#branje_EhrId').val());
+}
+
+
+$(window).load( function() {
+    $("#dodajanje_selectEhrId").change(function() {
+        // console.log($('#dodajanje_selectEhrId').val());
+        $('#dodajanje_EhrId').val($('#dodajanje_selectEhrId').val());
+    });
+    $("#branje_selectEhrId").change(function() {
+        // console.log($('#branje_selectEhrId').val());
+        $('#branje_EhrId').val($('#branje_selectEhrId').val());
+    });
+});

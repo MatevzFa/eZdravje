@@ -1,0 +1,17 @@
+a.twitter-tweet {
+    position: relative;
+    height: 20px;
+    padding: 1px 8px 1px 8px;
+    font-weight: 500;
+    color: #fff;
+    cursor: pointer;
+    background-color: #1b95e0;
+    border-radius: 3px;
+    box-sizing: border-box;
+    font-family: 'Gotham Narrow SSm','Helvetica Neue',Helvetica,sans-serif;
+    font-weight: bold;
+}
+
+a.twitter-tweet:focus, a.twitter-tweet:hover, a.twitter-tweet:active {
+    background-color: #0c7abf;
+}
