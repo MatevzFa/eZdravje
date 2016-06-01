@@ -82,7 +82,7 @@ function generirajPodatke(stPacienta) {
                     teza    : 80,
                     kisik   : ((96 + (3+21*i)%4)/100).toFixed(2),
                     temperatura   : (36.3 + ((213*i)%5)/7*Math.pow(-1,i)).toFixed(1),
-                    sistolicni    : (118.0 + ((213*i)%5)/7*Math.pow(-1,i)).toFixed(1),
+                    sistolicni    : (134.0 + ((213*i)%5)/7*Math.pow(-1,i)).toFixed(1),
                     diastolicni   : (70.0 + ((213*i)%5)/7*Math.pow(-1,i)).toFixed(1)
                 });
             }
@@ -105,7 +105,7 @@ function generirajPodatke(stPacienta) {
                     teza    : 57,
                     kisik   : ((96 + (3+21*i)%4)/100).toFixed(2),
                     temperatura : ( i <= 6  ? (36.3 + ((213*i)%5)/7*Math.pow(-1,i)) : (38.6 + ((213*i)%5)/7*Math.pow(-1,i))   ).toFixed(1),
-                    sistolicni  : ( i <= 6 ? (118.0 + ((213*i)%5)/7*Math.pow(-1,i)) : (135.0 + ((213*i)%5)/7*Math.pow(-1,i))     ).toFixed(1),
+                    sistolicni  : ( i <= 6 ? (124.0 + ((213*i)%5)/7*Math.pow(-1,i)) : (135.0 + ((213*i)%5)/7*Math.pow(-1,i))     ).toFixed(1),
                     diastolicni : ( i <= 6 ? (70.0 + ((213*i)%5)/7*Math.pow(-1,i)) : (85.0 + ((213*i)%5)/7*Math.pow(-1,i))     ).toFixed(1)
                 });
             }
@@ -160,10 +160,11 @@ function createEHR(ime, priimek, datumRojstva, spol) {
                                     // console.log("Uspeh. [%s]", ehrId);
                                 }
                                 $('#createMsg').text('Uspešno dodan vnos. Pridobljen Ehr ID za'+ ime + ' ' + priimek + ' ('+ ehrId +') je bil vstavljen v ustrezna polja.');
-                                console.log('Uspešno dodan vnos. Pridobljen Ehr ID za'+ ime + ' ' + priimek + ' ('+ ehrId +') je bil vstavljen v ustrezna polja.');
+                                console.log('Uspešno dodan vnos. Pridobljen Ehr ID za '+ ime + ' ' + priimek + ' \n('+ ehrId +')\n je bil vstavljen v ustrezna polja.');
                                 // $('#branje_EhrId').val(ehrId);
                                 $('#dodajanje_EhrId').val(ehrId);
                                 $('#branje_EhrId').val(ehrId);
+                                $('#graf_EhrId').val(ehrId);
                             },
                             error: function(err) {
                                 $('#createMsg').text('Prišlo je do napake.');
@@ -252,20 +253,23 @@ function preberiMeritve(ehrId) {
                                             for(var i = 0; i < data.fact.length; i++) {
                                                 if (data.fact[i].dim.COUNTRY == "Slovenia" && data.fact[i].dim.YEAR == "2014") {
 
-                                                    TLAK_SLO.systolic[data.fact[i].dim.SEX] = data.fact[i].Value;
+                                                    TLAK_SLO.systolic[data.fact[i].dim.SEX] = parsePressureString(data.fact[i].Value);
                                                 }
                                             }
 
                                             for (var i = 0; i < response.length; i++) {
                                                 var gender = (response2.party.gender == 'FEMALE' ? 'Female' : (response2.party.gender == 'MALE' ? 'Male' : 'Both sexes'));
-                                                // console.log(gender);
-                                                var press = parseInt(TLAK_SLO.systolic[gender].substring(0, 5)) < response[i].systolic;
+                                                // console.log(TLAK_SLO.systolic[gender]);
+                                                var p_low = TLAK_SLO.systolic[gender].low  > response[i].systolic; // prenizek
+                                                var p_mid = Math.abs(TLAK_SLO.systolic[gender].mid - response[i].systolic) < 2; // povprečen
+                                                var p_high= TLAK_SLO.systolic[gender].high < response[i].systolic; // previsok
+                                                // console.log(response[i].systolic, p_low, p_mid, p_high);
                                                 $('#prebraniPodatki tbody').append(' \
-                                                    <tr style="background-color: rgba('+ (press ? '255,0,0' : '255,255,255') +', 0.3)"> \
+                                                    <tr style="background-color: rgba('+ (p_high ? '255,0,0' : (p_low ? '255,165,0' : (p_mid ? '0,255,0' : '255,255,255'))) +', 0.1)"> \
                                                         <th scope="row">' + (i+1) + '</td> \
                                                         <td>' + response[i].time.substring(0, 16) + '</td> \
-                                                        <td>' + response[i].systolic.toFixed(1) + ' / ' + response[i].diastolic.toFixed(1) + (press ? '<span style="margin-left: 10px; color:#999">Povišan krvni tlak</span>' : '') +'</td> \
-                                                        <td>'+ (press ? '<a class="twitter-tweet" href="https://twitter.com/intent/tweet">Tweet</a>' : '') +'</td> \
+                                                        <td>' + response[i].systolic.toFixed(1) + ' / ' + response[i].diastolic.toFixed(1) + '<span style="margin-left: 10px; color:#999">'+(p_high ? 'Povišan krvni tlak.' : (p_low ? 'Nizek krvni tlak.' : ''))+'</span></td> \
+                                                        <td>'+ (p_high || p_low ? '<a class="twitter-tweet" href="https://twitter.com/intent/tweet">Tweet</a>' : '') +'</td> \
                                                     </tr> \
                                                 ');
                                             }
@@ -284,8 +288,85 @@ function preberiMeritve(ehrId) {
         error: function(err) {
             $('#readMsg').text('Vnešeni podatki niso pravilni.');
         }
-    })
+    });
+}
 
+function parsePressureString(str) {
+    var arr = str.split(' ');
+    var tmp = arr[1].substring(1, arr[1].length - 1).split('-');
+    // console.log(arr, tmp);
+    arr[1] = tmp[0];
+    arr[2] = tmp[1];
+    var o = {
+        mid : parseFloat(arr[0]),
+        low : parseFloat(arr[1]),
+        high: parseFloat(arr[2])
+    }
+    // console.log(o);
+    return o;
+}
+
+function risiGraf(ehrId) {
+    $('#ch').empty();
+    var sessionId = getSessionId();
+    var ctx = $('#ch');
+    var data = {
+        labels : [],
+        datasets : [
+            {
+                label : 'Sistolični',
+                fill : false,
+                borderJoinStyle : 'miter',
+                lineTension: 0.1,
+                borderColor: '#88D',
+                data : []
+            },
+            {
+                label : 'Diastolični',
+                fill : false,
+                borderJoinStyle : 'miter',
+                lineTension: 0.1,
+                borderColor: '#D88',
+                data : []
+            }
+        ]
+    }
+    $.ajax({
+        url: baseUrl + "/view/" + ehrId + "/" + "blood_pressure?" + $.param({limit: 20}),
+        type: 'GET',
+        headers: {"Ehr-Session": sessionId},
+        success: function (response) {
+            if (response.length > 0) {
+                for (var i = 0; i < response.length; i++) {
+                    var j = response.length - i - 1;
+
+                    data.labels[i] = response[j].time.substring(0, 15);
+                    data.datasets[0].data[i] = response[j].systolic;
+                    data.datasets[1].data[i] = response[j].diastolic;
+                }
+                var chart = new Chart(ctx, {
+                    type : 'line',
+                    data : data,
+                    options : {
+                        scales : {
+                            yAxes : [
+                                {
+                                    ticks : {
+                                        max : 150,
+                                        min : 60,
+                                        stepSize: 10
+                                    }
+                                }
+                            ]
+                        },
+                        height : 400,
+                    }
+                });
+            } else {
+                console.log('nothing\n', response);
+            }
+        },
+    });
 
 
 }
@@ -322,6 +403,10 @@ function preberiMeritveClick() {
     preberiMeritve($('#branje_EhrId').val());
 }
 
+function prikaziGrafClick() {
+    risiGraf($('#graf_EhrId').val());
+}
+
 
 $(window).load( function() {
     $("#dodajanje_selectEhrId").change(function() {
@@ -331,5 +416,9 @@ $(window).load( function() {
     $("#branje_selectEhrId").change(function() {
         // console.log($('#branje_selectEhrId').val());
         $('#branje_EhrId').val($('#branje_selectEhrId').val());
+    });
+    $("#graf_selectEhrId").change(function() {
+        // console.log($('#branje_selectEhrId').val());
+        $('#graf_EhrId').val($('#graf_selectEhrId').val());
     });
 });
