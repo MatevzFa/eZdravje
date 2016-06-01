@@ -240,6 +240,7 @@ function preberiMeritve(ehrId) {
                 type: 'GET',
                 headers: {"Ehr-Session": sessionId},
                 success: function (response) {
+                    $('#readMsg').text('');
                     if (response.length > 0) {
                         // console.log(response);
                         var TLAK_SLO = {
@@ -336,6 +337,7 @@ function risiGraf(ehrId) {
         type: 'GET',
         headers: {"Ehr-Session": sessionId},
         success: function (response) {
+            $('#graphMsg').text('');
             if (response.length > 0) {
                 for (var i = 0; i < response.length; i++) {
                     var j = response.length - i - 1;
@@ -366,6 +368,9 @@ function risiGraf(ehrId) {
                 console.log('nothing\n', response);
             }
         },
+        error: function(err) {
+            $('#graphMsg').text('Vnešeni podatki niso pravilni.');
+        }
     });
 
 
